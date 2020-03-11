@@ -5,7 +5,7 @@ import boto3
 from pprint import pprint
 from datetime import datetime, timedelta
 
-sess = boto3.session.Session(profile_name='default')
+sess = boto3.session.Session(profile_name='default', region_name='eu-central-1')
 client = sess.client('ecs')
 response = client.run_task(
     cluster='mycluster',
@@ -14,15 +14,17 @@ response = client.run_task(
          'containerOverrides': [
              {
                  'name': 'httpd',  # name of an existing container already defined inside of the task definition
-                 'command': [
-                     'whoami'
-                 ]
+                 'command': ['sleep, 100'],
+                 'environment': [{
+                    'name': 'MYCUSTOMVARIABLE',
+                    'value': 'TUMADREEEEEEE'
+                 }]
              }
          ]
      }
     )
 
 pprint(response)
-# arn = response["tasks"][0]['taskArn']
-# waiter = client.get_waiter('tasks_stopped')
-# waiter.wait(cluster='default', tasks=[arn])
+arn = response["tasks"][0]['taskArn']
+waiter = client.get_waiter('tasks_stopped')
+waiter.wait(cluster='default', tasks=[arn])
