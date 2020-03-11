@@ -7,5 +7,7 @@ from datetime import datetime, timedelta
 
 sess = boto3.session.Session(profile_name='default')
 ecs = sess.client('ecs')
+
 clusters = ecs.list_clusters()
+
 pprint(clusters)

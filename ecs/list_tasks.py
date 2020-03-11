@@ -8,13 +8,8 @@ from datetime import datetime, timedelta
 sess = boto3.session.Session(profile_name='default')
 client = sess.client('ecs')
 
-response = client.describe_services(
-    cluster='mycluster',
-    services=[
-        'httpd-service',
-    ],
-    include=[
-        'TAGS',
-    ]
+response = client.list_tasks(
+    cluster='mycluster'
 )
+
 pprint(response)
