@@ -8,13 +8,15 @@ from datetime import datetime, timedelta
 sess = boto3.session.Session(profile_name='default', region_name='eu-central-1')
 client = sess.client('ecs')
 response = client.run_task(
-    cluster='mycluster',
-    taskDefinition='my-httpd',
+    cluster='mycluster',  # my already existing cluster
+    taskDefinition='my-httpd', # my already existing task definition
     overrides={
          'containerOverrides': [
              {
-                 'name': 'httpd',  # name of an existing container already defined inside of the task definition
-                 'command': ['sleep, 100'],
+                 'name': 'httpd',  # name of an existing container already defined inside of my existing task definition
+                 # Until now I specified cluster->task_definition->container. Now
+                 # I can speicify what I want to override from this container (I cannot everything)
+                 # for the new container that I'm going to spin up
                  'environment': [{
                     'name': 'MYCUSTOMVARIABLE',
                     'value': 'TUMADREEEEEEE'
@@ -27,4 +29,4 @@ response = client.run_task(
 pprint(response)
 arn = response["tasks"][0]['taskArn']
 waiter = client.get_waiter('tasks_stopped')
-waiter.wait(cluster='default', tasks=[arn])
+waiter.wait(cluster='mycluster', tasks=[arn])
