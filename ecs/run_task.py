@@ -9,18 +9,19 @@ sess = boto3.session.Session(profile_name='default', region_name='eu-central-1')
 client = sess.client('ecs')
 response = client.run_task(
     cluster='mycluster',  # my already existing cluster
-    taskDefinition='my-httpd', # my already existing task definition
+    taskDefinition='tdcentos', # my already existing task definition
     overrides={
          'containerOverrides': [
              {
-                 'name': 'httpd',  # name of an existing container already defined inside of my existing task definition
+                 'name': 'ccentos',  # name of an existing container already defined inside of my existing task definition
                  # Until now I specified cluster->task_definition->container. Now
                  # I can speicify what I want to override from this container (I cannot everything)
                  # for the new container that I'm going to spin up
                  'environment': [{
                     'name': 'MYCUSTOMVARIABLE',
                     'value': 'TUMADREEEEEEE'
-                 }]
+                 }],
+                 'command': ['date'] # like when we do: docker run -it centos:latest date
              }
          ]
      }
