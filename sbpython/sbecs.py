@@ -21,7 +21,7 @@ def getbnwname(env: str="dev"):
         res = subprocess.check_output("bnw_name " + appname + " master " + env + " production eu-west-1", shell=True)
         return res
     except IOError:
-        print("File not accessible")
+        sys.exit(0)
 
 
 
@@ -60,5 +60,9 @@ def listtasks(env: str="dev"):
     else:
         print("No tasks")
 
-if __name__ == "__main__":
-    listtasks()
+if __name__ == "__main__":    
+    env = "dev"
+    if len(sys.argv) > 1 and sys.argv[1] == "live":
+        env = "live"
+
+    listtasks(env)
