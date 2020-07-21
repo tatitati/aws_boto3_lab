@@ -24,7 +24,6 @@ def getbnwname(env: str="dev", forApp: str = None):
         else:
             res = subprocess.check_output("bnw_name " + forApp + " master " + env + " production eu-west-1", shell=True)
 
-        print(res.decode('UTF-8'))
         return res.decode('UTF-8')
 
     except IOError:
@@ -32,8 +31,7 @@ def getbnwname(env: str="dev", forApp: str = None):
 
 
 
-def listtasks(env: str, status: str, forApp: str = None):
-    bnwname = getbnwname(env, forApp)
+def listtasks(env: str, status: str, bnw_name: str):    
     sess = boto3.session.Session(region_name='eu-west-1', profile_name='dev-production')
     client = sess.client('ecs')
     runOnCluster=client.list_clusters()['clusterArns'][0]
@@ -98,6 +96,8 @@ if __name__ == "__main__":
     forApp = None
     if len(sys.argv) > 2:
         forApp = sys.argv[2]
-
+    
+    bnwname = getbnwname(env, forApp)
+    print(bnwname)
     for status in ["RUNNING", 'PENDING']:
-        listtasks(env, status, forApp)
+        listtasks(env, status, bnwname)
