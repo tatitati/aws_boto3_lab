@@ -39,24 +39,21 @@ def listtasks(env: str="dev"):
     )
 
     if len(response['taskArns']) > 0:
-        tasks = response['taskArns']
-
         response = client.describe_tasks(
             cluster=runOnCluster,
-            tasks=tasks
+            tasks=response['taskArns']
         )
 
         for task in response['tasks']:
             containers=task['containers']
             overrides=task['overrides']['containerOverrides'][0]
-            print("Container")
+            print("\n\nContainer:")
             print("=========")
             pprint(containers[0])
             print("\n")
             print("Command")
             print("=======")
             print(overrides['command'])
-            print("\n\n===========================================\n\n")
     else:
         print("No tasks")
 
