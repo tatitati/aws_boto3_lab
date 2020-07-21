@@ -48,21 +48,19 @@ def listtasks(env: str, status: str, bnw_name: str):
             tasks=response['taskArns']
         )
 
-
-
         for idx, task in enumerate(response['tasks']):
-            containers=task['containers']
             overrides=task['overrides']['containerOverrides'][0]
             print("\n" + str(idx) + ") Task " + status + ":")
             print(task["taskArn"])
             # print("=========")
             # pprint(containers[0])
-            # print("Command:")
+                        
             if 'startedAt' in task:
                 print("started at:")
                 print(task["startedAt"])
 
-            if 'command' in task:
+            if 'command' in overrides:
+                print("Command:")
                 print(overrides['command'])
 
             # this code might be useful to have more useful information
