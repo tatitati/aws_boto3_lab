@@ -12,7 +12,7 @@ cd /projects/dockerized_project
 
 Output show you that we have 2 containers running of this project (/projects/dockerized_project) in dev:
 ```
-Container RUNNING
+Task RUNNING
 =================
 {'containerArn': 'arn:aws:ecs:eu-west-1:089169401626:container/c1db7ad2-e21a-4c60-a87c-3f36cf83980b',
  'cpu': '2',
@@ -30,7 +30,7 @@ Container RUNNING
     ['/bin/bash', '-c', 'cd /opt/project/snowflake && python3 merge.py']
 
 
-Container RUNNING
+Task RUNNING
 =================
 {'containerArn': 'arn:aws:ecs:eu-west-1:.......:container/75446e63.......',
  'cpu': '2',
