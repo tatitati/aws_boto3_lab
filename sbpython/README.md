@@ -10,7 +10,7 @@ cd /projects/dockerized_project
 <file.py>
 ```
 
-Output:
+Output show you that we have 2 containers running of this project (/projects/dockerized_project) in dev:
 ```
 Container
 =========
