@@ -44,28 +44,29 @@ def listtasks(env: str, status: str):
             tasks=response['taskArns']
         )
 
-        
 
         for idx, task in enumerate(response['tasks']):
             containers=task['containers']
             overrides=task['overrides']['containerOverrides'][0]
-            print("\n\n" + str(idx) + ") Task " + status + ":")
-            print("=========")
-            pprint(containers[0])
-            print("\nCommand")
-            print("=======")
+            print("\n" + str(idx) + ") Task " + status + ":")
+            print(task["taskArn"])
+            # print("=========")
+            # pprint(containers[0])
+            # print("Command:")
+            print("started at:")
+            print(task["startedAt"])
             print(overrides['command'])
-            
+
             # this code might be useful to have more useful information
             # containerInstance = task["containerInstanceArn"]
             # response = client.describe_container_instances(
             #     cluster=runOnCluster,
-            #     containerInstances=[                
+            #     containerInstances=[
             #         containerInstance
             #     ]
             # )
             # instance = response["containerInstances"]
-            
+
             # print("\nResources")
             # print("=============")
             # print("\nRegistered resources")
@@ -74,12 +75,12 @@ def listtasks(env: str, status: str):
             # print(instance[0]["remainingResources"])
 
     else:
-        print("\n\n* No tasks " + status)    
+        print("\n\n* No tasks " + status)
 
 
-    
 
-if __name__ == "__main__":    
+
+if __name__ == "__main__":
     env = "dev"
     if len(sys.argv) > 1 and sys.argv[1] == "live":
         env = "live"
