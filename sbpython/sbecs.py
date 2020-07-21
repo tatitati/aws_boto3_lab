@@ -25,7 +25,7 @@ def getbnwname(env: str="dev"):
 
 
 
-def listtasks(env: str="dev"):
+def listtasks(env: str, status: str):
     bnwname = getbnwname(env).decode('UTF-8')
     region = 'eu-west-1'
     sess = boto3.session.Session(region_name=region, profile_name='dev-production')
@@ -35,7 +35,7 @@ def listtasks(env: str="dev"):
     response = client.list_tasks(
         cluster=runOnCluster,
         family=bnwname,
-        desiredStatus='RUNNING'
+        desiredStatus=status
     )
 
     if len(response['taskArns']) > 0:
@@ -47,7 +47,7 @@ def listtasks(env: str="dev"):
         for task in response['tasks']:
             containers=task['containers']
             overrides=task['overrides']['containerOverrides'][0]
-            print("\n\nContainer:")
+            print("\n\nContainer " + status + ":")
             print("=========")
             pprint(containers[0])
             print("\n")
@@ -55,11 +55,15 @@ def listtasks(env: str="dev"):
             print("=======")
             print(overrides['command'])
     else:
-        print("No tasks")
+        print("\n\n* No tasks " + status)    
+
+
+    
 
 if __name__ == "__main__":    
     env = "dev"
     if len(sys.argv) > 1 and sys.argv[1] == "live":
         env = "live"
 
-    listtasks(env)
+    for status in ["RUNNING", 'PENDING']:
+        listtasks(env, status)
