@@ -10,25 +10,31 @@ from pprint import pprint
 import subprocess
 from datetime import datetime, timedelta
 
-def getbnwname(env: str="dev"):
+def getbnwname(env: str="dev", forApp: str = None):
     try:
-        f = open("_pipeline/config.sh")
-        text=f.read()
-        f.close()
+        res = ""
+        if forApp == None:
+            f = open("_pipeline/config.sh")
+            text=f.read()
+            f.close()
 
-        matches = re.findall(r"export APP_NAME='(.*)'",text)
-        appname = matches[0]
-        res = subprocess.check_output("bnw_name " + appname + " master " + env + " production eu-west-1", shell=True)
+            matches = re.findall(r"export APP_NAME='(.*)'",text)
+            appname = matches[0]
+            res = subprocess.check_output("bnw_name " + appname + " master " + env + " production eu-west-1", shell=True)
+        else:
+            res = subprocess.check_output("bnw_name " + forApp + " master " + env + " production eu-west-1", shell=True)
+
+        print(res.decode('UTF-8'))
         return res.decode('UTF-8')
+
     except IOError:
         sys.exit(0)
 
 
 
-def listtasks(env: str, status: str):
-    bnwname = getbnwname(env)
-    region = 'eu-west-1'
-    sess = boto3.session.Session(region_name=region, profile_name='dev-production')
+def listtasks(env: str, status: str, forApp: str = None):
+    bnwname = getbnwname(env, forApp)
+    sess = boto3.session.Session(region_name='eu-west-1', profile_name='dev-production')
     client = sess.client('ecs')
     runOnCluster=client.list_clusters()['clusterArns'][0]
 
@@ -36,13 +42,14 @@ def listtasks(env: str, status: str):
         cluster=runOnCluster,
         family=bnwname,
         desiredStatus=status
-    )
+    )    
 
     if len(response['taskArns']) > 0:
         response = client.describe_tasks(
             cluster=runOnCluster,
             tasks=response['taskArns']
         )
+
 
 
         for idx, task in enumerate(response['tasks']):
@@ -57,7 +64,8 @@ def listtasks(env: str, status: str):
                 print("started at:")
                 print(task["startedAt"])
 
-            print(overrides['command'])
+            if 'command' in task:
+                print(overrides['command'])
 
             # this code might be useful to have more useful information
             # containerInstance = task["containerInstanceArn"]
@@ -84,8 +92,12 @@ def listtasks(env: str, status: str):
 
 if __name__ == "__main__":
     env = "dev"
-    if len(sys.argv) > 1 and sys.argv[1] == "live":
-        env = "live"
+    if len(sys.argv) > 1:
+        env = sys.argv[1]
+
+    forApp = None
+    if len(sys.argv) > 2:
+        forApp = sys.argv[2]
 
     for status in ["RUNNING", 'PENDING']:
-        listtasks(env, status)
+        listtasks(env, status, forApp)
