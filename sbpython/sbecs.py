@@ -44,7 +44,9 @@ def listtasks(env: str, status: str):
             tasks=response['taskArns']
         )
 
-        for task in response['tasks']:
+        
+
+        for task in response['tasks']:            
             containers=task['containers']
             overrides=task['overrides']['containerOverrides'][0]
             print("\n\nTask " + status + ":")
@@ -53,6 +55,24 @@ def listtasks(env: str, status: str):
             print("\nCommand")
             print("=======")
             print(overrides['command'])
+            
+            # this code might be useful to have more useful information
+            # containerInstance = task["containerInstanceArn"]
+            # response = client.describe_container_instances(
+            #     cluster=runOnCluster,
+            #     containerInstances=[                
+            #         containerInstance
+            #     ]
+            # )
+            # instance = response["containerInstances"]
+            
+            # print("\nResources")
+            # print("=============")
+            # print("\nRegistered resources")
+            # print(instance[0]["registeredResources"])
+            # print("\nRemaining resources")
+            # print(instance[0]["remainingResources"])
+
     else:
         print("\n\n* No tasks " + status)    
 
