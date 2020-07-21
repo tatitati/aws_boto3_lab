@@ -53,8 +53,10 @@ def listtasks(env: str, status: str):
             # print("=========")
             # pprint(containers[0])
             # print("Command:")
-            print("started at:")
-            print(task["startedAt"])
+            if 'startedAt' in task:
+                print("started at:")
+                print(task["startedAt"])
+
             print(overrides['command'])
 
             # this code might be useful to have more useful information
