@@ -19,14 +19,14 @@ def getbnwname(env: str="dev"):
         matches = re.findall(r"export APP_NAME='(.*)'",text)
         appname = matches[0]
         res = subprocess.check_output("bnw_name " + appname + " master " + env + " production eu-west-1", shell=True)
-        return res
+        return res.decode('UTF-8')
     except IOError:
         sys.exit(0)
 
 
 
 def listtasks(env: str, status: str):
-    bnwname = getbnwname(env).decode('UTF-8')
+    bnwname = getbnwname(env)
     region = 'eu-west-1'
     sess = boto3.session.Session(region_name=region, profile_name='dev-production')
     client = sess.client('ecs')
