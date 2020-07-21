@@ -46,10 +46,10 @@ def listtasks(env: str, status: str):
 
         
 
-        for task in response['tasks']:            
+        for idx, task in enumerate(response['tasks']):
             containers=task['containers']
             overrides=task['overrides']['containerOverrides'][0]
-            print("\n\nTask " + status + ":")
+            print("\n\n" + str(idx) + ") Task " + status + ":")
             print("=========")
             pprint(containers[0])
             print("\nCommand")
