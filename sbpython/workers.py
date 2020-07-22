@@ -10,27 +10,6 @@ from pprint import pprint
 import subprocess
 from datetime import datetime, timedelta
 
-def getbnwname(env: str="dev", forApp: str = None):
-    try:
-        res = ""
-        if forApp == None:
-            f = open("_pipeline/config.sh")
-            text=f.read()
-            f.close()
-
-            matches = re.findall(r"export APP_NAME='(.*)'",text)
-            appname = matches[0]
-            res = subprocess.check_output("bnw_name " + appname + " master " + env + " production eu-west-1", shell=True)
-        else:
-            res = subprocess.check_output("bnw_name " + forApp + " master " + env + " production eu-west-1", shell=True)
-
-        return res.decode('UTF-8')
-
-    except IOError:
-        sys.exit(0)
-
-
-
 def listtasks(env: str, status: str, bnw_name: str):
     sess = boto3.session.Session(region_name='eu-west-1', profile_name='dev-production')
     client = sess.client('ecs')
@@ -84,18 +63,9 @@ def listtasks(env: str, status: str, bnw_name: str):
         print("\n\n* No tasks " + status)
 
 
-
-
 if __name__ == "__main__":
-    env = "dev"
-    if len(sys.argv) > 1:
-        env = sys.argv[1]
-
-    forApp = None
-    if len(sys.argv) > 2:
-        forApp = sys.argv[2]
-
-    bnwname = getbnwname(env, forApp)
-    print(bnwname)
+    # example sb-airflow-worker-master-285e152-a-dev-production-eu-west-1-app-container
+    bnwname=sys.argv[1]    
+    
     for status in ["RUNNING", 'PENDING']:
-        listtasks(env, status, bnwname)
+        listtasks("dev", status, bnwname)
