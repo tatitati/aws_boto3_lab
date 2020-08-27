@@ -15,3 +15,8 @@ bucket_name='tatitatibucket'
 source = {'Bucket': bucket_name, 'Key': f"{prefix}/{file_to_reingest}{extension}"}
 dest = s3.Bucket(bucket_name)
 dest.copy(source, f"{prefix}/reingested/{file_to_reingest}--reingested--{now}{extension}" )
+
+
+# List reingested folder
+for object in dest.objects.filter(Prefix=f"{prefix}/reingested/"):
+    print(object.key)
