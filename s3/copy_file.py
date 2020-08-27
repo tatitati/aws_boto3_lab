@@ -1,25 +1,17 @@
 #!/usr/bin/env python3
 import boto3
+import datetime
 
-session=boto3.session.Session(profile_name="dev-production")
+now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f')
+prefix="myfolder/copy/com_simplybusiness_rfq_created_2"
+file_to_reingest = "mycsv_pipe"
+extension=".csv"
+
+session=boto3.session.Session(profile_name="default")
 s3=session.resource('s3')
 
-bucket_name='snowflake-master-98773dd-0-dev-production-eu-west-1'
-prefix = 'snowpipe/copy/com_simplybusiness_rfq_created_2/2020-07-28'
-
-my_bucket = s3.Bucket(bucket_name)
-
-
-copy_from = {
-      'Bucket': bucket,
-      'Key': prefix
-}
-
-bucket = s3.Bucket(bucket_name)
-bucket.copy(copy_from, bucket_name, f"{prefix}/reingested" )
-
-for file in my_bucket.objects.filter(Prefix=prefix):
-    print(file.key)
-
-
-# aws s3 cp s3://mybucket/test.txt s3://mybucket/test2.txt
+bucket_name='tatitatibucket'
+# source = {'Bucket': bucket_name, 'Key': f"snowpipe/copy/com_simplybusiness_rfq_created_2/smyfolder/{file}"}
+source = {'Bucket': bucket_name, 'Key': f"{prefix}/{file_to_reingest}{extension}"}
+dest = s3.Bucket(bucket_name)
+dest.copy(source, f"{prefix}/reingested/{file_to_reingest}--reingested--{now}{extension}" )
