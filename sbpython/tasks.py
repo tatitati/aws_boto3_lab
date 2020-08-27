@@ -32,7 +32,7 @@ def getbnwname(env: str="dev", forApp: str = None):
 
 
 def listtasks(env: str, status: str, bnw_name: str):
-    sess = boto3.session.Session(region_name='eu-west-1', profile_name='dev-production')
+    sess = boto3.session.Session(region_name='eu-west-1', profile_name=env+'-production')
     client = sess.client('ecs')
     runOnCluster=client.list_clusters()['clusterArns'][0]
 
@@ -97,5 +97,5 @@ if __name__ == "__main__":
 
     bnwname = getbnwname(env, forApp)
     print(bnwname)
-    for status in ["RUNNING", 'PENDING']:
+    for status in ["STOPPED", "RUNNING", 'PENDING']:
         listtasks(env, status, bnwname)
